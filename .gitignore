@@ -1,0 +1,43 @@
+# Miscellaneous
+*.class
+*.log
+*.pyc
+*.swp
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Flutter / Dart
+**/build/
+**/.dart_tool/
+**/.pub-cache/
+**/.pub/
+**/.flutter-plugins-dependencies
+**/doc/api/
+**/ios/Flutter/.last_build_id
+/coverage/
+
+# IDEs & Editor
+**/.idea/
+**/*.iml
+**/*.ipr
+**/*.iws
+.vscode/
+
+# Environment & Credentials
+**/.env
+**/.env.*
+!**/.env.example
+
+# Android build artifacts
+**/android/app/debug/
+**/android/app/profile/
+**/android/app/release/
+**/android/.gradle/
+**/android/build/
+
+# iOS build artifacts
+**/ios/.symlinks/
+
+# Widget preview
+**/.widget_preview/

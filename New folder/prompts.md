@@ -1,0 +1,4 @@
+1. Ayúdame a diseñar tres escenarios nuevos en formato Dado/Cuando/Entonces para la spec de solapamiento de reservas, indicando un mensaje de rechazo exacto.
+2. Genera un archivo de pruebas unitarias en Flutter usando un repositorio falso para validar los escenarios de solapamiento y el mensaje de error en CrearReserva.
+3. Escribe la lógica de validación de intervalos de tiempo en la clase CrearReserva para que cumpla con las pruebas unitarias de solapamiento.
+4. Redacta el contenido para el archivo RESPUESTAS.md cumpliendo con las secciones exactas y citando los archivos del repositorio con formato ruta:línea.
