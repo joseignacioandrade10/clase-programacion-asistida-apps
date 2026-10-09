@@ -1,42 +1,42 @@
-# Contrato de Interfaz de Usuario: PantallaDivisor
+# Contrato de Interfaz de Usuario: PantallaDivisor (React)
 
-**Capa**: `lib/presentation/pantalla_divisor.dart`
+**Capa**: `src/presentation/PantallaDivisor.jsx`
 
 ---
 
 ## Estructura de la Pantalla Única
 
-La interfaz se compone de los siguientes elementos visuales y claves (Keys) para pruebas de widgets:
+La interfaz se compone de los siguientes elementos visuales, accesibles mediante `id` y `data-testid` para pruebas con React Testing Library / Vitest:
 
 1. **Campo Monto Total**:
-   - `Key('campo_monto')`
+   - `id="campo_monto"`, `data-testid="campo_monto"`
    - Etiqueta: "Monto total"
-   - Tipo de teclado: Numérico decimal.
-   - Mensaje de error: `"Monto inválido"` ante formato incorrecto o valor $\le 0$.
+   - Tipo: `<input type="text" />` o `<input type="number" step="any" />`
+   - Contenedor de error: `data-testid="error_monto"` con el texto `"Monto inválido"` ante formato incorrecto o valor $\le 0$.
 
 2. **Campo Número de Personas**:
-   - `Key('campo_personas')`
+   - `id="campo_personas"`, `data-testid="campo_personas"`
    - Etiqueta: "Número de personas"
-   - Tipo de teclado: Numérico entero.
-   - Mensaje de error: `"Debe haber al menos una persona"` si el valor es $< 1$.
+   - Tipo: `<input type="number" min="1" step="1" />`
+   - Contenedor de error: `data-testid="error_personas"` con el texto `"Debe haber al menos una persona"` si el valor es $< 1$ o no entero.
 
 3. **Campo Porcentaje de Propina**:
-   - `Key('campo_propina')`
+   - `id="campo_propina"`, `data-testid="campo_propina"`
    - Etiqueta: "Porcentaje de propina (%)"
-   - Tipo de teclado: Numérico decimal.
-   - Mensaje de error: `"La propina es requerida"` si se deja vacío o valor $< 0$.
+   - Tipo: `<input type="number" min="0" step="any" />`
+   - Contenedor de error: `data-testid="error_propina"` con el texto `"La propina es requerida"` si se deja vacío o valor $< 0$.
 
 4. **Selector de Modo de Redondeo**:
-   - `Key('selector_redondeo')`
+   - `data-testid="selector_redondeo"`
    - Opciones:
-     - "Exacto" (`Key('opcion_redondeo_exacto')`)
-     - "Hacia arriba al entero más cercano" (`Key('opcion_redondeo_arriba')`)
+     - "Exacto": `data-testid="opcion_redondeo_exacto"` (`value="exacto"`)
+     - "Hacia arriba al entero más cercano": `data-testid="opcion_redondeo_arriba"` (`value="haciaArriba"`)
 
 5. **Botón Calcular**:
-   - `Key('boton_calcular')`
+   - `data-testid="boton_calcular"`
    - Texto: "Calcular"
 
 6. **Área de Resultado**:
-   - `Key('texto_resultado')`
-   - Formato visual: Muestra el importe con dos decimales formateado por `FormateadorMoneda` (ej. `27.50`).
+   - `data-testid="texto_resultado"`
+   - Formato visual: Muestra el importe por persona formateado con dos decimales mediante `formateadorMoneda` (ej. `27.50`).
    - Visibilidad: Oculto o vacío si hubo algún error de validación.

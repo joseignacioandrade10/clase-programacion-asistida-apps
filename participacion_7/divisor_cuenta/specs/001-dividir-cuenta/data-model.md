@@ -1,196 +1,251 @@
-# Data Model & Entidades: División de Cuenta
+# Data Model & Entidades: División de Cuenta (JavaScript / React)
 
-**Feature**: `specs/001-dividir-cuenta` | **Fecha**: 2026-10-01
+**Feature**: `specs/001-dividir-cuenta` | **Fecha**: 2026-10-09
 
-Este documento define las entidades, modelos de datos, interfaces y contratos de tipos que estructuran la aplicación, en estricto apego a las capas `domain`, `data` y `presentation`.
+Este documento define las entidades, modelos de datos, contratos y tipos de datos que estructuran la aplicación en **JavaScript**, organizados bajo las tres capas arquitectónicas: `domain`, `data` y `presentation`.
 
 ---
 
-## 1. Capa de Dominio (`lib/domain/`)
+## 1. Capa de Dominio (`src/domain/`)
 
-*Nota: La capa `domain` es Dart puro y no contiene ninguna dependencia de `package:flutter`.*
+*Nota: La capa `domain` es JavaScript puro (ES Modules) y NO contiene ninguna importación de React ni referencias al DOM.*
 
-### 1.1 Entidad `Cuenta`
+### 1.1 Entidad `Cuenta` (`src/domain/cuenta.js`)
 Representa los datos brutos de la transacción antes del cálculo.
 
-```dart
-class Cuenta {
-  final double montoTotal;
-  final int numeroPersonas;
-  final double porcentajePropina;
-
-  const Cuenta({
-    required this.montoTotal,
-    required this.numeroPersonas,
-    required this.porcentajePropina,
+```javascript
+/**
+ * Crea una entidad inmutable de Cuenta.
+ * @param {Object} params
+ * @param {number} params.montoTotal - Monto base de la cuenta (> 0).
+ * @param {number} params.numeroPersonas - Cantidad de personas (entero >= 1).
+ * @param {number} params.porcentajePropina - Porcentaje de propina (>= 0).
+ * @returns {Readonly<{montoTotal: number, numeroPersonas: number, porcentajePropina: number}>}
+ */
+export function crearCuenta({ montoTotal, numeroPersonas, porcentajePropina }) {
+  return Object.freeze({
+    montoTotal,
+    numeroPersonas,
+    porcentajePropina
   });
 }
 ```
 
-- **Inmutabilidad:** Todos los campos son `final`.
+- **Inmutabilidad:** Objeto congelado con `Object.freeze`.
 - **Reglas de negocio asociadas:**
-  - `montoTotal` debe ser mayor a 0.
-  - `numeroPersonas` debe ser mayor o igual a 1.
-  - `porcentajePropina` debe ser mayor o igual a 0.
+  - `montoTotal`: número mayor a 0.
+  - `numeroPersonas`: entero mayor o igual a 1.
+  - `porcentajePropina`: número mayor o igual a 0.
 
 ---
 
-### 1.2 Entidad `Resultado`
+### 1.2 Entidad `Resultado` (`src/domain/resultado.js`)
 Representa el producto del cálculo efectuado para la cuenta.
 
-```dart
-class Resultado {
-  final double totalPagar;
-  final double cuotaPorPersona;
-
-  const Resultado({
-    required this.totalPagar,
-    required this.cuotaPorPersona,
+```javascript
+/**
+ * Crea una entidad inmutable de Resultado.
+ * @param {Object} params
+ * @param {number} params.totalPagar - Monto total incluyendo propina.
+ * @param {number} params.cuotaPorPersona - Monto individual tras aplicar la estrategia de redondeo.
+ * @returns {Readonly<{totalPagar: number, cuotaPorPersona: number}>}
+ */
+export function crearResultado({ totalPagar, cuotaPorPersona }) {
+  return Object.freeze({
+    totalPagar,
+    cuotaPorPersona
   });
 }
 ```
 
-- **Inmutabilidad:** Todos los campos son `final`.
+- **Inmutabilidad:** Objeto congelado con `Object.freeze`.
 - **Valores:**
   - `totalPagar`: Corresponde al monto base más el valor de la propina calculada.
-  - `cuotaPorPersona`: Corresponde al monto por comensal tras aplicar la estrategia de redondeo especificada.
+  - `cuotaPorPersona`: Corresponde a la cuota individual tras aplicar la estrategia de redondeo.
 
 ---
 
-### 1.3 Interfaz `EstrategiaRedondeo`
-Contrato abstracto para el redondeo de importes.
+### 1.3 Contrato `EstrategiaRedondeo` (`src/domain/estrategiaRedondeo.js`)
+Contrato claro para las estrategias de redondeo en JavaScript.
 
-```dart
-abstract interface class EstrategiaRedondeo {
-  double redondear(double valor);
+```javascript
+/**
+ * Contrato de Estrategia de Redondeo.
+ * Cualquier estrategia válida DEBE ser un objeto con un método `aplicar(valor)`.
+ *
+ * @typedef {Object} IEstrategiaRedondeo
+ * @property {function(number): number} aplicar - Recibe el valor numérico y retorna el redondeado.
+ */
+
+/**
+ * Valida en tiempo de ejecución que un objeto satisfaga el contrato de EstrategiaRedondeo.
+ * @param {any} estrategia
+ * @returns {boolean}
+ */
+export function esEstrategiaValida(estrategia) {
+  return (
+    typeof estrategia === 'object' &&
+    estrategia !== null &&
+    typeof estrategia.aplicar === 'function'
+  );
 }
 ```
 
-- **ISP:** Posee un único método enfocado (`redondear`).
-- **LSP / OCP:** Permite añadir nuevas formas de redondeo sin alterar `CalcularDivision`.
+- **ISP:** Interfaz pequeña y precisa: una única función `aplicar(valor)`.
+- **LSP / OCP:** Permite añadir nuevas estrategias sin modificar `calcularDivision.js`.
 
 ---
 
-### 1.4 Caso de Uso `CalcularDivision`
-Aplica la lógica pura de cálculo sin formateo ni validaciones visuales.
+### 1.4 Caso de Uso `CalcularDivision` (`src/domain/calcularDivision.js`)
+Aplica la lógica pura de cálculo matemático sin formateo ni validaciones de UI.
 
-```dart
-class CalcularDivision {
-  Resultado ejecutar(Cuenta cuenta, EstrategiaRedondeo estrategia) {
-    final propina = cuenta.montoTotal * (cuenta.porcentajePropina / 100.0);
-    final total = cuenta.montoTotal + propina;
-    final cuotaExacta = total / cuenta.numeroPersonas;
-    final cuotaFinal = estrategia.redondear(cuotaExacta);
+```javascript
+import { crearResultado } from './resultado.js';
 
-    return Resultado(
-      totalPagar: total,
-      cuotaPorPersona: cuotaFinal,
-    );
-  }
-}
-```
+/**
+ * Calcula la división de la cuenta delegando el redondeo en la estrategia.
+ * @param {Object} cuenta - Objeto Cuenta ({ montoTotal, numeroPersonas, porcentajePropina }).
+ * @param {Object} estrategia - Objeto que implementa { aplicar(valor) }.
+ * @returns {Readonly<{totalPagar: number, cuotaPorPersona: number}>}
+ */
+export function calcularDivision(cuenta, estrategia) {
+  const propina = cuenta.montoTotal * (cuenta.porcentajePropina / 100.0);
+  const total = cuenta.montoTotal + propina;
+  const cuotaExacta = total / cuenta.numeroPersonas;
+  const cuotaFinal = estrategia.aplicar(cuotaExacta);
 
----
-
-### 1.5 Caso de Uso `ValidarEntrada`
-Verifica las entradas del usuario y retorna errores descriptivos si no cumplen las condiciones mínimas.
-
-```dart
-class ValidarEntrada {
-  String? validarMonto(String? texto) {
-    if (texto == null || texto.trim().isEmpty) return 'Monto inválido';
-    final normalizado = texto.replaceAll(',', '.').trim();
-    final valor = double.tryParse(normalizado);
-    if (valor == null || valor <= 0) return 'Monto inválido';
-    return null;
-  }
-
-  String? validarPersonas(String? texto) {
-    if (texto == null || texto.trim().isEmpty) return 'Debe haber al menos una persona';
-    final valor = int.tryParse(texto.trim());
-    if (valor == null || valor < 1) return 'Debe haber al menos una persona';
-    return null;
-  }
-
-  String? validarPropina(String? texto) {
-    if (texto == null || texto.trim().isEmpty) return 'La propina es requerida';
-    final normalizado = texto.replaceAll(',', '.').trim();
-    final valor = double.tryParse(normalizado);
-    if (valor == null || valor < 0) return 'La propina es requerida';
-    return null;
-  }
-}
-```
-
----
-
-## 2. Capa de Datos (`lib/data/`)
-
-### 2.1 Implementación `RedondeoExacto`
-Aplica redondeo decimal estándar a dos cifras decimales.
-
-```dart
-import '../domain/estrategia_redondeo.dart';
-
-class RedondeoExacto implements EstrategiaRedondeo {
-  @override
-  double redondear(double valor) {
-    // Redondeo estándar a 2 decimales
-    return (valor * 100).roundToDouble() / 100.0;
-  }
-}
-```
-
----
-
-### 2.2 Implementación `RedondeoHaciaArriba`
-Aplica redondeo al entero superior inmediato ($\lceil x \rceil$).
-
-```dart
-import '../domain/estrategia_redondeo.dart';
-
-class RedondeoHaciaArriba implements EstrategiaRedondeo {
-  @override
-  double redondear(double valor) {
-    return valor.ceilToDouble();
-  }
-}
-```
-
----
-
-## 3. Capa de Presentación (`lib/presentation/`)
-
-### 3.1 `FormateadorMoneda`
-Formatea números a dos cifras decimales fijas.
-
-```dart
-class FormateadorMoneda {
-  static String formatear(double valor) {
-    return valor.toStringAsFixed(2);
-  }
-}
-```
-
-### 3.2 `DivisorEstado` y `DivisorController`
-Encapsula el estado de la vista y coordina validaciones y cálculos sin mezclar lógica en el widget.
-
-```dart
-enum ModoRedondeo { exacto, haciaArriba }
-
-class DivisorEstado {
-  final String? errorMonto;
-  final String? errorPersonas;
-  final String? errorPropina;
-  final Resultado? resultado;
-  final ModoRedondeo modoRedondeo;
-
-  const DivisorEstado({
-    this.errorMonto,
-    this.errorPersonas,
-    this.errorPropina,
-    this.resultado,
-    this.modoRedondeo = ModoRedondeo.exacto,
+  return crearResultado({
+    totalPagar: total,
+    cuotaPorPersona: cuotaFinal
   });
 }
 ```
+
+---
+
+### 1.5 Caso de Uso `ValidarEntrada` (`src/domain/validarEntrada.js`)
+Valida los datos de entrada en formato texto provenientes del usuario y retorna mensajes de error claros o `null` si son válidos.
+
+```javascript
+export function normalizarNumero(texto) {
+  if (typeof texto !== 'string') return '';
+  return texto.trim().replace(',', '.');
+}
+
+export function validarMonto(texto) {
+  const normalizado = normalizarNumero(texto);
+  if (!normalizado) return 'Monto inválido';
+  const valor = Number(normalizado);
+  if (isNaN(valor) || valor <= 0) {
+    return 'Monto inválido';
+  }
+  return null;
+}
+
+export function validarPersonas(texto) {
+  const normalizado = normalizarNumero(texto);
+  if (!normalizado) return 'Debe haber al menos una persona';
+  const valor = Number(normalizado);
+  if (isNaN(valor) || !Number.isInteger(valor) || valor < 1) {
+    return 'Debe haber al menos una persona';
+  }
+  return null;
+}
+
+export function validarPropina(texto) {
+  const normalizado = normalizarNumero(texto);
+  if (!normalizado) return 'La propina es requerida';
+  const valor = Number(normalizado);
+  if (isNaN(valor) || valor < 0) {
+    return 'La propina es requerida';
+  }
+  return null;
+}
+
+export function validarEntradas({ monto, personas, propina }) {
+  const errorMonto = validarMonto(monto);
+  const errorPersonas = validarPersonas(personas);
+  const errorPropina = validarPropina(propina);
+
+  const esValido = !errorMonto && !errorPersonas && !errorPropina;
+
+  return {
+    esValido,
+    errores: {
+      monto: errorMonto,
+      personas: errorPersonas,
+      propina: errorPropina
+    }
+  };
+}
+```
+
+---
+
+## 2. Capa de Datos (`src/data/`)
+
+### 2.1 `RedondeoExacto` (`src/data/redondeoExacto.js`)
+```javascript
+export const redondeoExacto = {
+  /**
+   * Redondea a 2 decimales estándar.
+   * @param {number} valor
+   * @returns {number}
+   */
+  aplicar(valor) {
+    return Math.round((valor + Number.EPSILON) * 100) / 100;
+  }
+};
+```
+
+### 2.2 `RedondeoHaciaArriba` (`src/data/redondeoHaciaArriba.js`)
+```javascript
+export const redondeoHaciaArriba = {
+  /**
+   * Redondea hacia arriba al entero más cercano (ceil).
+   * @param {number} valor
+   * @returns {number}
+   */
+  aplicar(valor) {
+    return Math.ceil(valor);
+  }
+};
+```
+
+---
+
+## 3. Capa de Presentación (`src/presentation/`)
+
+### 3.1 Hook `useDivisor` (`src/presentation/useDivisor.js`)
+Recibe dependencias inyectadas y maneja el estado local de la pantalla única.
+
+```javascript
+/**
+ * Hook de gestión de estado para la pantalla divisora.
+ * RECIBE sus dependencias como parámetros (DIP).
+ *
+ * @param {Object} dependencias
+ * @param {function} dependencias.calcularDivision
+ * @param {Object} dependencias.validarEntrada
+ * @param {Object} dependencias.estrategias - { exacto, haciaArriba }
+ */
+export function useDivisor({ calcularDivision, validarEntrada, estrategias }) { ... }
+```
+
+### 3.2 Formateador de Moneda (`src/presentation/formateadorMoneda.js`)
+```javascript
+/**
+ * Formatea un valor numérico a cadena con exactamente dos decimales.
+ * @param {number} valor
+ * @returns {string}
+ */
+export function formatearMoneda(valor) {
+  if (typeof valor !== 'number' || isNaN(valor)) {
+    return '0.00';
+  }
+  return valor.toFixed(2);
+}
+```
+
+### 3.3 Componente UI (`src/presentation/PantallaDivisor.jsx`)
+Renderiza el formulario y los resultados consumiendo los datos provistos por `useDivisor`.

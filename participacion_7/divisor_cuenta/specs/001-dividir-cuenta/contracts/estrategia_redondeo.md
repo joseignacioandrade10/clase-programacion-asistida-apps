@@ -1,29 +1,34 @@
 # Contrato de Interfaz: EstrategiaRedondeo
 
-**Capa**: `lib/domain/estrategia_redondeo.dart`
+**Capa**: `src/domain/estrategiaRedondeo.js`
 
 ---
 
 ## Definición
 
-```dart
-abstract interface class EstrategiaRedondeo {
-  /// Recibe un valor decimal en coma flotante y devuelve el valor redondeado
-  /// según la estrategia concreta implementada.
-  /// 
-  /// - Parámetro: [valor] (double positivo)
-  /// - Retorna: [double] redondeado
-  /// - Excepciones: Ninguna esperada con valores numéricos válidos.
-  double redondear(double valor);
-}
+En JavaScript, el contrato de estrategia de redondeo se define como un objeto que expone una función `aplicar(valor)`:
+
+```javascript
+/**
+ * @typedef {Object} EstrategiaRedondeo
+ * @property {function(number): number} aplicar - Aplica la regla de redondeo al valor numérico recibido.
+ */
 ```
 
-## Implementaciones Concretas Esperadas (`lib/data/`)
+### Especificación de la función `aplicar`:
+- **Parámetro**: `valor` (`number` positivo).
+- **Retorno**: `number` redondeado según la regla concreta.
+- **Excepciones / Errores**: Ninguno con entradas numéricas válidas.
 
-1. **`RedondeoExacto`**:
-   - `redondear(27.50)` $\rightarrow$ `27.50`
-   - `redondear(3.33333...)` $\rightarrow$ `3.33`
-2. **`RedondeoHaciaArriba`**:
-   - `redondear(3.33)` $\rightarrow$ `4.00`
-   - `redondear(27.50)` $\rightarrow$ `28.00`
-   - `redondear(30.00)` $\rightarrow$ `30.00` (los enteros cerrados se conservan)
+---
+
+## Implementaciones Concretas (`src/data/`)
+
+1. **`redondeoExacto.js`**:
+   - `aplicar(27.50)` $\rightarrow$ `27.50`
+   - `aplicar(3.33333...)` $\rightarrow$ `3.33`
+
+2. **`redondeoHaciaArriba.js`**:
+   - `aplicar(3.33)` $\rightarrow$ `4` (o `4.00`)
+   - `aplicar(27.50)` $\rightarrow$ `28` (o `28.00`)
+   - `aplicar(30.00)` $\rightarrow$ `30` (los enteros cerrados se conservan)

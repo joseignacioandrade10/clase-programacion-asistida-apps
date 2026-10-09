@@ -15,3 +15,21 @@
 - Actualización de la constitución del proyecto en `.specify/memory/constitution.md` a la versión 2.0.0.
 - Adaptación tecnológica de principios de Flutter a React (JavaScript, Vite) y pruebas con Vitest.
 
+### [2026-10-09] - Planificación de Implementación (`/speckit-plan`)
+- Lectura de la especificación de `specs/001-dividir-cuenta/spec.md` (sin modificaciones).
+- Generación y actualización de artefactos de diseño técnico en `specs/001-dividir-cuenta/`:
+  - `plan.md`: Arquitectura limpia en capas (`domain`, `data`, `presentation`, `main.jsx`).
+  - `research.md`: Decisiones sobre React + Vite, JavaScript puro en `domain/`, inyección de dependencias y pruebas con Vitest.
+  - `data-model.md`: Modelos inmutables, casos de uso y contratos de JavaScript.
+  - `contracts/`: Contratos de `estrategia_redondeo.md`, `use_divisor.md` y `ui_contract.md`.
+  - `quickstart.md`: Guía de comandos y validación de escenarios de aceptación.
+
+### [2026-10-09] - Generación de Tareas de Implementación (`/speckit-tasks`)
+- Generación de `tasks.md` en `specs/001-dividir-cuenta/tasks.md` con 26 tareas ordenadas por dependencia y agrupadas por historias de usuario:
+  - Fase 1: Setup inicial de entorno React con Vite y Vitest.
+  - Fase 2: Fundamentos inmutables de dominio y contratos.
+  - Fase 3: User Story 1 (Cálculo exacto - MVP) con pruebas unitarias TDD.
+  - Fase 4: User Story 2 (Redondeo hacia arriba) con pruebas unitarias.
+  - Fase 5: User Story 3 (Validación de entrada y normalización) con pruebas unitarias.
+  - Fase 6: Polish, pruebas de integración y validación con Vitest.
+

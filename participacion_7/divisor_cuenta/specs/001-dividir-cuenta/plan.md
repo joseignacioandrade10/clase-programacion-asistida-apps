@@ -1,115 +1,119 @@
-# Implementation Plan: División de Cuenta de Restaurante
+# Implementation Plan: División de Cuenta de Restaurante (React + Vite)
 
-**Branch**: `001-dividir-cuenta` | **Date**: 2026-10-01 | **Spec**: [spec.md](./spec.md)
+**Branch**: `sdd` | **Date**: 2026-10-09 | **Spec**: [spec.md](./spec.md)
 
-**Input**: Feature specification from `/specs/001-dividir-cuenta/spec.md`
+**Input**: Feature specification from `specs/001-dividir-cuenta/spec.md`
 
 ---
 
 ## Summary
 
-Implementar una aplicación en Flutter de pantalla única para dividir la cuenta de un restaurante entre varios comensales, aplicando la fórmula $\text{Total} = \text{Monto} + (\text{Monto} \times \frac{\text{Propina}}{100})$ y dividiendo equitativamente con soporte de dos modos de redondeo (Exacto y Hacia arriba al entero más cercano).
+Implementar una aplicación web de pantalla única en **React con Vite y JavaScript** para dividir la cuenta de un restaurante entre varios comensales, aplicando la fórmula $\text{Total} = \text{Monto} + (\text{Monto} \times \frac{\text{Propina}}{100})$ y dividiendo equitativamente con soporte para dos modos de redondeo: exacto y hacia arriba al entero más cercano.
 
-El diseño sigue una arquitectura limpia en tres capas estrictas (`presentation -> domain <- data`), donde `domain` es Dart puro sin importaciones de Flutter, las estrategias de redondeo son abiertas a extensión pero cerradas a modificación (OCP/LSP), y `main.dart` es el único punto de composición e inyección de dependencias.
+La solución respeta estrictamente la Constitución del proyecto (v2.0.0), organizándose en tres capas limpias (`src/presentation -> src/domain <- src/data`), donde `src/domain/` es JavaScript puro (sin React ni DOM), el estado se gestiona localmente con `useState` dentro de un hook desacoplado que recibe sus dependencias por inyección, y `src/main.jsx` es el único punto de composición donde se instancian las dependencias concretas. La suite de pruebas automatizadas utiliza **Vitest**.
 
 ---
 
 ## Technical Context
 
-**Language/Version**: Dart 3.x / Flutter SDK Estable.
+**Language/Version**: JavaScript (ES Modules, ECMAScript 2022+).
 
-**Primary Dependencies**: Ninguna dependencia de terceros (100% SDK nativo de Dart y Flutter).
+**Framework & Build Tool**: React 18+ / 19+ con Vite.
 
-**Storage**: N/A (aplicación en memoria, sin base de datos ni persistencia requerida).
+**Primary Dependencies**: `react`, `react-dom` (sin librerías externas de gestión de estado ni paquetes UI de terceros).
 
-**Testing**: `flutter_test` (pruebas unitarias para `domain` y `data`, y pruebas de widgets para `presentation`).
+**Storage**: N/A (100% en memoria en cliente, sin base de datos ni red).
 
-**Target Platform**: Multiplataforma (Web Chrome/Edge, Android, iOS, Windows).
+**Testing**: Vitest (`@testing-library/react`, `jsdom`).
 
-**Project Type**: Mobile / Web Application (pantalla única con `setState`).
+**Target Platform**: Navegadores web modernos (Chrome, Edge, Safari, Firefox).
 
-**Performance Goals**: Cálculo y renderizado en menos de 50 milisegundos tras pulsar "Calcular".
+**Project Type**: Single Page Application (SPA de pantalla única con estado local `useState`).
+
+**Performance Goals**: Cálculo y actualización del DOM en menos de 50 ms tras presionar "Calcular".
 
 **Constraints**:
-- 100% offline (sin llamadas de red ni secretos).
-- La capa `domain` no debe importar nada de `package:flutter`.
+- 100% offline (sin llamadas a API ni persistencia remota).
+- La capa `src/domain/` no importa nada de React ni del DOM.
 - Formateo estricto a 2 cifras decimales.
+- Manejo de dependencias por inyección en `useDivisor.js` y composición centralizada en `src/main.jsx`.
 
 ---
 
 ## Constitution Check
 
-*GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
+*GATE: Evaluado y verificado conforme a la Constitución v2.0.0.*
 
-- [x] **SOLID - SRP**: `CalcularDivision` solo calcula. `ValidarEntrada` solo valida. `FormateadorMoneda` solo formatea.
-- [x] **SOLID - OCP**: `EstrategiaRedondeo` es una interfaz abstracta que permite nuevas reglas de redondeo sin modificar código existente.
-- [x] **SOLID - LSP**: `RedondeoExacto` y `RedondeoHaciaArriba` implementan `EstrategiaRedondeo` y son mutuamente sustituibles.
-- [x] **SOLID - ISP**: `EstrategiaRedondeo` contiene un único método (`double redondear(double valor)`).
-- [x] **SOLID - DIP**: `DivisorController` depende de la interfaz `EstrategiaRedondeo` y casos de uso de `domain`, nunca de clases concretas de `data`.
-- [x] **Arquitectura en Capas**: Estructura `presentation -> domain <- data`.
-- [x] **Independencia de Dominio**: `lib/domain/` es Dart puro y no importa `package:flutter`.
-- [x] **Punto Único de Composición**: `main.dart` es el único lugar donde se instancian las implementaciones concretas.
-- [x] **Seguridad**: No existen API keys ni secretos almacenados.
-- [x] **Calidad y Pruebas**: Todos los 6 criterios de aceptación de la spec se traducen en pruebas ejecutables.
-- [x] **Regla de la Materia**: Cada función y clase tiene responsabilidades explícitas, parámetros tipados y comportamiento comprensible para el estudiante.
+- [x] **SOLID - SRP**:
+  * `calcularDivision.js` solo calcula; no valida ni formatea.
+  * `validarEntrada.js` solo valida y genera errores; no calcula.
+  * `formateadorMoneda.js` solo formatea a dos decimales.
+- [x] **SOLID - OCP**: Agregar una nueva regla de redondeo no obliga a editar los módulos existentes (solo crear un nuevo archivo en `src/data/` con `aplicar(valor)`).
+- [x] **SOLID - LSP**: `redondeoExacto` y `redondeoHaciaArriba` satisfacen el contrato `aplicar(valor)` y son sustituibles sin verificar su tipo.
+- [x] **SOLID - ISP**: Contrato mínimo `estrategiaRedondeo`: una única función `aplicar(valor)`. Nadie depende de funciones que no usa.
+- [x] **SOLID - DIP**: `useDivisor.js` (presentation) recibe sus dependencias de casos de uso y estrategias abstractas; no importa directamente implementaciones concretas de `src/data/`.
+- [x] **Arquitectura en Capas**: `src/presentation` / `src/domain` / `src/data`.
+- [x] **Regla de Dependencia**: `presentation -> domain <- data`.
+- [x] **Independencia de Dominio**: `src/domain/` NO importa React ni nada del DOM (es JavaScript puro).
+- [x] **Punto Único de Composición**: `src/main.jsx` es el ÚNICO lugar donde se instancian implementaciones concretas.
+- [x] **Seguridad**: Ningún secreto ni API key almacenado en el repositorio.
+- [x] **Calidad y Pruebas**: Todos los criterios de aceptación de la spec se convierten en pruebas ejecutables con Vitest.
+- [x] **Regla de la Materia**: Toda función generada puede ser explicada por el estudiante (qué hace, por qué existe, qué recibe, qué devuelve y qué errores produce).
 
 ---
 
 ## Project Structure
 
-### Documentation (this feature)
+### Documentation (`specs/001-dividir-cuenta/`)
 
 ```text
 specs/001-dividir-cuenta/
-├── spec.md              # Requisitos funcionales y escenarios de aceptación
-├── plan.md              # Este plan de implementación arquitectónico
-├── research.md          # Decisiones de diseño y evaluación de alternativas
-├── data-model.md        # Definición de entidades, casos de uso y contratos
-├── quickstart.md        # Guía de verificación paso a paso
-├── contracts/           # Interfaces y contratos de presentación y dominio
-│   ├── estrategia_redondeo.md
-│   ├── divisor_controller.md
-│   └── ui_contract.md
-├── checklists/
-│   └── requirements.md  # Checklist de calidad de la especificación
-└── tasks.md             # Tareas ordenadas para implementación (/speckit-tasks)
+├── spec.md              # Requisitos funcionales y escenarios de aceptación (NO modificado)
+├── plan.md              # Este plan de arquitectura e implementación
+├── research.md          # Decisiones de diseño técnico y justificación (Fase 0)
+├── data-model.md        # Modelos, entidades y contratos en JavaScript (Fase 1)
+├── quickstart.md        # Guía paso a paso de ejecución y verificación (Fase 1)
+├── contracts/           # Contratos de interfaz
+│   ├── estrategia_redondeo.md  # Contrato aplicar(valor)
+│   ├── use_divisor.md          # Contrato del hook useDivisor
+│   └── ui_contract.md          # Contrato visual de PantallaDivisor
+└── tasks.md             # Tareas ordenadas para implementación
 ```
 
-### Source Code Layout
+### Source Code Layout (`src/` & `tests/`)
 
 ```text
-lib/
+src/
 ├── domain/
-│   ├── cuenta.dart                  # Entidad inmutable de la cuenta
-│   ├── resultado.dart               # Entidad inmutable del resultado calculado
-│   ├── estrategia_redondeo.dart     # Interfaz abstracta con método redondear()
-│   ├── calcular_division.dart       # Lógica matemática de división y propina
-│   └── validar_entrada.dart         # Validación de campos y generación de errores
+│   ├── cuenta.js                # Entidad inmutable ({ montoTotal, numeroPersonas, porcentajePropina })
+│   ├── resultado.js             # Entidad inmutable ({ totalPagar, cuotaPorPersona })
+│   ├── estrategiaRedondeo.js    # Contrato conceptual: función aplicar(valor)
+│   ├── calcularDivision.js      # Lógica matemática pura de cálculo
+│   └── validarEntrada.js        # Validación de campos y normalización de decimales (, y .)
 ├── data/
-│   ├── redondeo_exacto.dart         # Implementación de redondeo estándar (2 dec.)
-│   └── redondeo_hacia_arriba.dart   # Implementación de redondeo ceil()
+│   ├── redondeoExacto.js        # Implementación con aplicar(valor) a 2 decimales estándar
+│   └── redondeoHaciaArriba.js   # Implementación con aplicar(valor) usando Math.ceil()
 ├── presentation/
-│   ├── divisor_controller.dart      # Controlador inyectado que coordina cálculo
-│   ├── formateador_moneda.dart      # Formateo visual con dos decimales
-│   └── pantalla_divisor.dart        # StatefulWidget de la pantalla única
-└── main.dart                        # Composición e inyección de dependencias
+│   ├── useDivisor.js            # Hook React con useState; RECIBE sus dependencias
+│   ├── formateadorMoneda.js     # Formateo numérico a cadena con 2 decimales
+│   └── PantallaDivisor.jsx      # Componente visual de la pantalla única
+└── main.jsx                     # ÚNICO punto de composición e inyección de dependencias
 
-test/
+tests/
 ├── domain/
-│   ├── calcular_division_test.dart  # Pruebas unitarias de cálculo matemático
-│   └── validar_entrada_test.dart    # Pruebas unitarias de validación de campos
+│   ├── calcularDivision.test.js # Pruebas unitarias del cálculo matemático
+│   └── validarEntrada.test.js   # Pruebas unitarias de validación y errores
 ├── data/
-│   ├── redondeo_exacto_test.dart    # Pruebas unitarias de redondeo exacto
-│   └── redondeo_hacia_arriba_test.dart # Pruebas unitarias de redondeo hacia arriba
+│   ├── redondeoExacto.test.js   # Pruebas unitarias de redondeo exacto
+│   └── redondeoHaciaArriba.test.js # Pruebas unitarias de redondeo hacia arriba
 └── presentation/
-    ├── formateador_moneda_test.dart # Pruebas unitarias de formateo
-    └── pantalla_divisor_test.dart   # Pruebas de widgets (los 6 escenarios de aceptación)
+    ├── formateadorMoneda.test.js# Pruebas unitarias del formateador
+    ├── useDivisor.test.js       # Pruebas unitarias del hook de presentación
+    └── PantallaDivisor.test.jsx # Pruebas de integración de componentes (escenarios de aceptación)
 ```
-
-**Structure Decision**: Se adopta la estructura en capas solicitada por la constitución del proyecto y el usuario, garantizando total separación entre la lógica pura (Dart) y los componentes visuales (Flutter).
 
 ---
 
 ## Complexity Tracking
 
-> Ninguna violación a la constitución. El diseño es minimalista, desacoplado y directo.
+> **Sin violaciones ni complejidad innecesaria.** El diseño cumple estrictamente los principios SOLID y la Constitución v2.0.0, manteniendo el código modular, fácilmente testeable y 100% explicable por el estudiante.

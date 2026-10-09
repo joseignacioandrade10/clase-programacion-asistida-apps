@@ -1,29 +1,28 @@
-# Quickstart & Guía de Validación: División de Cuenta
+# Quickstart & Guía de Validación: División de Cuenta (React + Vite)
 
-**Feature**: `specs/001-dividir-cuenta` | **Fecha**: 2026-10-01
+**Feature**: `specs/001-dividir-cuenta` | **Fecha**: 2026-10-09
 
-Esta guía describe cómo ejecutar y verificar integralmente el divisor de cuentas en base a los criterios de aceptación especificados.
+Esta guía describe cómo ejecutar y verificar integralmente el divisor de cuentas en base a los criterios de aceptación especificados, utilizando **React, Vite y Vitest**.
 
 ---
 
 ## 1. Requisitos Previos
 
-- Flutter SDK 3.x estable instalado.
-- Dispositivo móvil, emulador o navegador web disponible (Chrome o Edge).
+- Node.js (versión 18+ o 20+ recomendada) y npm instalados.
+- Navegador web moderno (Chrome, Edge, Firefox).
 
 ---
 
 ## 2. Comandos de Verificación Automatizada
 
 ```bash
-# 1. Obtener dependencias
-flutter pub get
+# 1. Instalar dependencias del proyecto
+npm install
 
-# 2. Análisis estático (debe reportar 0 issues)
-flutter analyze
-
-# 3. Ejecutar suite de pruebas unitarias y de widgets
-flutter test
+# 2. Ejecutar la suite de pruebas unitarias y de componentes con Vitest
+npm run test
+# O para ejecutar una sola vez sin modo watch:
+npx vitest run
 ```
 
 ---
@@ -44,9 +43,8 @@ flutter test
 ## 4. Ejecución en Vivo
 
 ```bash
-# Para ejecutar en el navegador Chrome:
-flutter run -d chrome
-
-# Para ejecutar en Edge:
-flutter run -d edge
+# Iniciar el servidor local de desarrollo con Vite:
+npm run dev
 ```
+
+Abre la URL indicada (usualmente `http://localhost:5173/`) en tu navegador web para interactuar con la aplicación.
