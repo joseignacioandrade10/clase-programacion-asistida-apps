@@ -16,8 +16,8 @@
 
 **Purpose**: Inicialización del proyecto React con Vite y estructura de carpetas en capas.
 
-- [ ] T001 Configurar entorno React con Vite y dependencias de prueba (Vitest, `@testing-library/react`, `jsdom`) en `package.json` y `vite.config.js`
-- [ ] T002 [P] Crear estructura de directorios en capas `src/domain/`, `src/data/`, `src/presentation/`, `tests/domain/`, `tests/data/` y `tests/presentation/`
+- [X] T001 Configurar entorno React con Vite y dependencias de prueba (Vitest, `@testing-library/react`, `jsdom`) en `package.json` y `vite.config.js`
+- [X] T002 [P] Crear estructura de directorios en capas `src/domain/`, `src/data/`, `src/presentation/`, `tests/domain/`, `tests/data/` y `tests/presentation/`
 
 ---
 
@@ -27,10 +27,10 @@
 
 **⚠️ CRITICAL**: Ningún desarrollo de historias de usuario puede comenzar hasta que esta fase esté completa.
 
-- [ ] T003 [P] Implementar entidad inmutable `Cuenta` en `src/domain/cuenta.js` con validaciones de tipo (`montoTotal` > 0, `numeroPersonas` >= 1 entero, `porcentajePropina` >= 0)
-- [ ] T004 [P] Implementar entidad inmutable `Resultado` en `src/domain/resultado.js` conteniendo `totalPagar` y `cuotaPorPersona` congelados con `Object.freeze`
-- [ ] T005 [P] Implementar contrato conceptual y validador de `EstrategiaRedondeo` que exige el método `aplicar(valor)` en `src/domain/estrategiaRedondeo.js`
-- [ ] T006 [P] Implementar función utilitaria pura `formatearMoneda` para salida a 2 decimales fijos en `src/presentation/formateadorMoneda.js`
+- [X] T003 [P] Implementar entidad inmutable `Cuenta` en `src/domain/cuenta.js` con validaciones de tipo (`montoTotal` > 0, `numeroPersonas` >= 1 entero, `porcentajePropina` >= 0)
+- [X] T004 [P] Implementar entidad inmutable `Resultado` en `src/domain/resultado.js` conteniendo `totalPagar` y `cuotaPorPersona` congelados con `Object.freeze`
+- [X] T005 [P] Implementar contrato conceptual y validador de `EstrategiaRedondeo` que exige el método `aplicar(valor)` en `src/domain/estrategiaRedondeo.js`
+- [X] T006 [P] Implementar función utilitaria pura `formatearMoneda` para salida a 2 decimales fijos en `src/presentation/formateadorMoneda.js`
 
 **Checkpoint**: Base foundational lista. La implementación de historias de usuario puede comenzar.
 
@@ -46,16 +46,16 @@
 
 > **NOTA: Escribir estas pruebas primero y verificar que fallen antes de implementar.**
 
-- [ ] T007 [P] [US1] Escribir pruebas unitarias para la estrategia `redondeoExacto` en `tests/data/redondeoExacto.test.js`
-- [ ] T008 [P] [US1] Escribir pruebas unitarias para el caso de uso `calcularDivision` con redondeo exacto en `tests/domain/calcularDivision.test.js`
+- [X] T007 [P] [US1] Escribir pruebas unitarias para la estrategia `redondeoExacto` en `tests/data/redondeoExacto.test.js`
+- [X] T008 [P] [US1] Escribir pruebas unitarias para el caso de uso `calcularDivision` con redondeo exacto en `tests/domain/calcularDivision.test.js`
 
 ### Implementación para User Story 1
 
-- [ ] T009 [P] [US1] Implementar estrategia concreta `redondeoExacto` con método `aplicar(valor)` redondeando a 2 decimales estándar en `src/data/redondeoExacto.js`
-- [ ] T010 [US1] Implementar caso de uso `calcularDivision` aplicando la fórmula total y delegando el redondeo a la estrategia en `src/domain/calcularDivision.js`
-- [ ] T011 [US1] Implementar hook `useDivisor` con `useState` recibiendo dependencias inyectadas para cálculo exacto en `src/presentation/useDivisor.js`
-- [ ] T012 [US1] Implementar componente `PantallaDivisor` con campos de entrada, botón de cálculo y visualización del resultado usando `data-testid` en `src/presentation/PantallaDivisor.jsx`
-- [ ] T013 [US1] Configurar composición e inyección de dependencias en `src/main.jsx` instanciando las dependencias concretas y conectándolas a `PantallaDivisor`
+- [X] T009 [P] [US1] Implementar estrategia concreta `redondeoExacto` con método `aplicar(valor)` redondeando a 2 decimales estándar en `src/data/redondeoExacto.js`
+- [X] T010 [US1] Implementar caso de uso `calcularDivision` aplicando la fórmula total y delegando el redondeo a la estrategia en `src/domain/calcularDivision.js`
+- [X] T011 [US1] Implementar hook `useDivisor` con `useState` recibiendo dependencias inyectadas para cálculo exacto en `src/presentation/useDivisor.js`
+- [X] T012 [US1] Implementar componente `PantallaDivisor` con campos de entrada, botón de cálculo y visualización del resultado usando `data-testid` en `src/presentation/PantallaDivisor.jsx`
+- [X] T013 [US1] Configurar composición e inyección de dependencias en `src/main.jsx` instanciando las dependencias concretas y conectándolas a `PantallaDivisor`
 
 **Checkpoint**: User Story 1 completamente funcional y testeable de forma independiente (MVP completado).
 
@@ -69,13 +69,13 @@
 
 ### Tests para User Story 2
 
-- [ ] T014 [P] [US2] Escribir pruebas unitarias para la estrategia `redondeoHaciaArriba` en `tests/data/redondeoHaciaArriba.test.js`
+- [X] T014 [P] [US2] Escribir pruebas unitarias para la estrategia `redondeoHaciaArriba` en `tests/data/redondeoHaciaArriba.test.js`
 
 ### Implementación para User Story 2
 
-- [ ] T015 [P] [US2] Implementar estrategia concreta `redondeoHaciaArriba` con método `aplicar(valor)` utilizando `Math.ceil()` en `src/data/redondeoHaciaArriba.js`
-- [ ] T016 [US2] Incorporar selector de modo de redondeo (`exacto` / `haciaArriba`) en `src/presentation/PantallaDivisor.jsx` y soportar el cambio de modo en `src/presentation/useDivisor.js`
-- [ ] T017 [US2] Proveer `redondeoHaciaArriba` en la inyección de dependencias de `src/main.jsx`
+- [X] T015 [P] [US2] Implementar estrategia concreta `redondeoHaciaArriba` con método `aplicar(valor)` utilizando `Math.ceil()` en `src/data/redondeoHaciaArriba.js`
+- [X] T016 [US2] Incorporar selector de modo de redondeo (`exacto` / `haciaArriba`) en `src/presentation/PantallaDivisor.jsx` y soportar el cambio de modo en `src/presentation/useDivisor.js`
+- [X] T017 [US2] Proveer `redondeoHaciaArriba` en la inyección de dependencias de `src/main.jsx`
 
 **Checkpoint**: User Stories 1 y 2 operan de forma conjunta e independiente, satisfaciendo el principio OCP.
 
@@ -89,13 +89,13 @@
 
 ### Tests para User Story 3
 
-- [ ] T018 [P] [US3] Escribir pruebas unitarias para `validarEntrada` cubriendo errores de monto, personas, propina y normalización de comas en `tests/domain/validarEntrada.test.js`
+- [X] T018 [P] [US3] Escribir pruebas unitarias para `validarEntrada` cubriendo errores de monto, personas, propina y normalización de comas en `tests/domain/validarEntrada.test.js`
 
 ### Implementación para User Story 3
 
-- [ ] T019 [US3] Implementar caso de uso `validarEntrada` (`validarMonto`, `validarPersonas`, `validarPropina`, `validarEntradas`) con normalización de `,` a `.` en `src/domain/validarEntrada.js`
-- [ ] T020 [US3] Integrar `validarEntrada` en `src/presentation/useDivisor.js` para registrar errores y anular el resultado cuando los datos sean inválidos
-- [ ] T021 [US3] Conectar mensajes de error visuales (`error_monto`, `error_personas`, `error_propina`) en `src/presentation/PantallaDivisor.jsx`
+- [X] T019 [US3] Implementar caso de uso `validarEntrada` (`validarMonto`, `validarPersonas`, `validarPropina`, `validarEntradas`) con normalización de `,` a `.` en `src/domain/validarEntrada.js`
+- [X] T020 [US3] Integrar `validarEntrada` en `src/presentation/useDivisor.js` para registrar errores y anular el resultado cuando los datos sean inválidos
+- [X] T021 [US3] Conectar mensajes de error visuales (`error_monto`, `error_personas`, `error_propina`) en `src/presentation/PantallaDivisor.jsx`
 
 **Checkpoint**: Todas las historias de usuario (P1, P2, P3) están implementadas, validadas y blindadas contra entradas erróneas.
 
@@ -105,11 +105,11 @@
 
 **Purpose**: Verificación de calidad, pruebas de componentes, integración completa y validación final de criterios de aceptación.
 
-- [ ] T022 [P] Escribir pruebas unitarias para `formatearMoneda` en `tests/presentation/formateadorMoneda.test.js`
-- [ ] T023 [P] Escribir pruebas unitarias del hook `useDivisor` con `@testing-library/react` en `tests/presentation/useDivisor.test.js`
-- [ ] T024 Escribir pruebas de integración de componentes para `PantallaDivisor` en `tests/presentation/PantallaDivisor.test.jsx` cubriendo los 6 escenarios de aceptación
-- [ ] T025 Ejecutar suite completa con Vitest (`npx vitest run`) verificando el 100% de pruebas aprobadas
-- [ ] T026 Validar escenarios de `specs/001-dividir-cuenta/quickstart.md` en servidor local con `npm run dev`
+- [X] T022 [P] Escribir pruebas unitarias para `formatearMoneda` en `tests/presentation/formateadorMoneda.test.js`
+- [X] T023 [P] Escribir pruebas unitarias del hook `useDivisor` con `@testing-library/react` en `tests/presentation/useDivisor.test.js`
+- [X] T024 Escribir pruebas de integración de componentes para `PantallaDivisor` en `tests/presentation/PantallaDivisor.test.jsx` cubriendo los 6 escenarios de aceptación
+- [X] T025 Ejecutar suite completa con Vitest (`npx vitest run`) verificando el 100% de pruebas aprobadas
+- [X] T026 Validar escenarios de `specs/001-dividir-cuenta/quickstart.md` en servidor local con `npm run dev`
 
 ---
 
