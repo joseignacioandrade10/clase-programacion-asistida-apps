@@ -1,5 +1,19 @@
 # Respuestas — Deber 2
 
+## Bitácora de Métricas
+
+| Métrica | Flutter (laboratorio) | React (este deber) |
+|---|---:|---:|
+| Minutos hasta la primera versión que compila | 15 min | 12 min |
+| **Minutos hasta que pasan los 6 casos** | 25 min | 20 min |
+| Iteraciones con el agente | 3 | 1 |
+| Líneas de código escritas a mano | 45 | 38 (solo test/casosDePrueba.js) |
+| Enunciados modificados en la spec | — | 0 |
+| Enunciados modificados en la Constitution | — | 2 (adaptación a JS/React) |
+| Líneas modificadas en el plan | — | 15 (cambio a JSX, Vite y hooks) |
+| Casos de aceptación que pasan (0–6) | 6 | 6 |
+
+
 1. Análisis QUÉ/CÓMO y reutilización de la especificación
 * **Spec intacta (QUÉ):** Aproximadamente el 85% de la especificación viajó intacta. Pude reutilizar todos los enunciados que describían el comportamiento del usuario y las reglas de negocio matemáticas son totalmente agnósticos a la tecnología.
 * **Spec con adaptación (MIXTO):** Un **10%** requirió adaptación en su redacción. Las ideas seguían siendo válidas, pero usaban alguna palabra que sonaba al ecosistema móvil, aunque su propósito era general.
