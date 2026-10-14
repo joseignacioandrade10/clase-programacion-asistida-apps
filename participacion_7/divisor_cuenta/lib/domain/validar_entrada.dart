@@ -38,6 +38,9 @@ class ValidarEntrada {
     if (valor == null || valor < 0) {
       return 'La propina es requerida';
     }
+    if (valor > 100) {
+      return 'La propina no puede superar el 100%';
+    }
     return null;
   }
 }
