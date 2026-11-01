@@ -65,6 +65,6 @@ const casos = <CasoDivision>[
     personas: 3,
     propina: 0,
     modo: 'arriba',
-    esperado: 4.00,
+    esperado: 3.00,
   ),
 ];
