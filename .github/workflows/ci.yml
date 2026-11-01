@@ -24,7 +24,7 @@ jobs:
       - name: Instalar dependencias
         run: flutter pub get
 
-      - name: Analizar código
+      - name: Analizar codigo
         run: flutter analyze
 
       - name: Ejecutar pruebas
