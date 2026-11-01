@@ -1,32 +1,40 @@
-name: CI
+name: CI Flutter
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
+    branches: [ main ]
 
 jobs:
   verificar:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout del repositorio
+      - name: Clonar repositorio
         uses: actions/checkout@v4
 
       - name: Configurar Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: 'stable'
-          cache: true
 
       - name: Instalar dependencias
-        run: flutter pub get
+        run: |
+          cd participacion_7/divisor_cuenta
+          flutter pub get
 
-      - name: Analizar codigo
-        run: flutter analyze
+      - name: Ejecutar linter (analyze)
+        run: |
+          cd participacion_7/divisor_cuenta
+          flutter analyze
 
-      - name: Ejecutar pruebas
-        run: flutter test
+      - name: Ejecutar pruebas (test)
+        run: |
+          cd participacion_7/divisor_cuenta
+          flutter test
 
-      - name: Compilar APK debug
-        run: flutter build apk --debug
+      - name: Compilar APK (build)
+        run: |
+          cd participacion_7/divisor_cuenta
+          flutter build apk --debug
